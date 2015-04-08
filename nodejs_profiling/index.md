@@ -1,3 +1,5 @@
+##开发笔记（一）：nodejs&pomelo服务器性能优化
+
 ###零、优化原则
 
 80%的性能被20%的代码吞噬掉了。
@@ -17,21 +19,21 @@ pomelo: 1.0.x
 2、在package.json中添加[webkit-devtools-agent](https://www.npmjs.com/package/webkit-devtools-agent-frontend)依赖并下载安装依赖。
 
 3、在app.js（程序入口文件，也可能是index.js）中加入如下代码
-
-    process.on('SIGUSR2', function() {
-      var agent = require('webkit-devtools-agent');
-      if (agent.server) {
-        agent.stop();
-      } else {
-        agent.start({
-          port: 9999,
-          bind_to: '0.0.0.0',
-          ipc_port: 3333,
-          verbose: true
-        });
-      }
+```
+process.on('SIGUSR2', function() {
+  var agent = require('webkit-devtools-agent');
+  if (agent.server) {
+    agent.stop();
+  } else {
+    agent.start({
+      port: 9999,
+      bind_to: '0.0.0.0',
+      ipc_port: 3333,
+      verbose: true
     });
-
+  }
+});
+```
 
 4、运行程序，在命令行中输入`kill -USR2 <pid>`，然后运行`webkit-devtools-agent-frontend`。打开chrome浏览器，访问`http://localhost:9090/inspector.html?host=<host>:9999&page=0`，在打开的页面中可以进行cpu和内存的profiling，其中host可以是本地也可以是远程的。
 
