@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>畅说英语 FreeSpeak</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #FFFFFF;
+      min-height: 100vh;
+      padding: 20px;
+      padding-bottom: 100px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 393px;
+      background: #FFFFFF;
+      padding: 40px 20px;
+      margin: 0 auto;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        max-width: 100%;
+        padding: 20px;
+        box-shadow: none;
+        border-radius: 0;
+      }
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #CC8F52;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      color: #33312E;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: #807973;
+    }
+
+    .page-content {
+      margin-bottom: 20px;
+    }
+
+    .doc-section {
+      margin-bottom: 32px;
+    }
+
+    .doc-section h2 {
+      font-size: 17px;
+      color: #33312E;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-left: 12px;
+      border-left: 4px solid #CC8F52;
+    }
+
+    .doc-section h3 {
+      font-size: 15px;
+      color: #33312E;
+      font-weight: 600;
+      margin: 20px 0 12px 0;
+    }
+
+    .doc-section p {
+      font-size: 15px;
+      color: #807973;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .doc-section ul {
+      margin: 0 0 12px 0;
+      padding-left: 24px;
+    }
+
+    .doc-section li {
+      font-size: 15px;
+      color: #807973;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .doc-section li strong {
+      color: #33312E;
+    }
+
+    .doc-section ul ul {
+      margin-top: 8px;
+    }
+
+    .page-footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 393px;
+      padding: 12px 16px;
+      background: #FFFFFF;
+      border-top: 1px solid #F7F4F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+    }
+
+    @media (max-width: 480px) {
+      .page-footer {
+        max-width: 100%;
+        left: 0;
+        transform: none;
+      }
+    }
+
+    .footer-left {
+      flex: 1;
+      margin-right: 8px;
+    }
+
+    .footer-center {
+      flex: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-hold {
+      background: #F7F4F0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: center;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-hold-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #33312E;
+    }
+
+    .footer-right {
+      flex: 0 0 44px;
+      margin-left: 8px;
+    }
+
+    /* IconButton 风格 - 参考 IconButton.tsx */
+    .footer-add-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: #F7F4F0;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .footer-add-btn:hover {
+      background: #CC8F52;
+    }
+
+    .footer-add-btn:hover svg {
+      color: #FFFFFF;
+    }
+
+    .footer-add-btn svg {
+      width: 20px;
+      height: 20px;
+      color: #CC8F52;
+      transition: color 0.2s ease;
+    }
+
+    /* RoundedButton 风格 - 参考 RoundedButton.tsx */
+    .open-sheet-btn {
+      width: 100%;
+      padding: 8px 16px;
+      background: #F7F4F0;
+      color: #CC8F52;
+      border: none;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .open-sheet-btn:hover {
+      background: #CC8F52;
+      color: #FFFFFF;
+    }
+
+    .open-sheet-btn:active {
+      transform: scale(0.98);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* BottomSheet 风格 */
+    .sheet {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 100%;
+      max-width: 393px;
+      bottom: 0;
+      background: #FFFFFF;
+      border-radius: 20px 20px 0 0;
+      transition: transform 0.3s ease;
+      z-index: 101;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .sheet.active {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 480px) {
+      .sheet {
+        max-width: 100%;
+        left: 0;
+        transform: translateY(100%);
+      }
+
+      .sheet.active {
+        transform: translateY(0);
+      }
+    }
+
+    .sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 12px 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* IconButton 风格关闭按钮 */
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      background: #F7F4F0;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #CC8F52;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      background: #CC8F52;
+      color: #FFFFFF;
+    }
+
+    .close-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .sheet-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      min-height: 400px;
+    }
+
+    .step.active {
+      display: flex;
+    }
+
+    /* 步骤1样式 */
+    .step-1-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      text-align: center;
+    }
+
+    .step-title {
+      font-size: 22px;
+      color: #33312E;
+      font-weight: 600;
+      margin-bottom: 12px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.4;
+    }
+
+    .step-subtitle {
+      font-size: 15px;
+      color: #807973;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .step-1-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 40px;
+      margin-top: auto;
+    }
+
+    /* 录音按钮 - 强调色 */
+    .record-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #CC8F52;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(204, 143, 82, 0.4);
+      position: relative;
+    }
+
+    .record-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(204, 143, 82, 0.5);
+    }
+
+    .record-btn:active {
+      transform: scale(0.98);
+    }
+
+    .record-btn.recording {
+      background: #4DCF4A;
+      animation: pulse 1.5s infinite;
+    }
+
+    .record-btn svg {
+      width: 48px;
+      height: 48px;
+      color: #FFFFFF;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 4px 15px rgba(77, 207, 74, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 4px 15px rgba(77, 207, 74, 0.4), 0 0 0 20px rgba(77, 207, 74, 0);
+      }
+    }
+
+    .record-hint {
+      margin-top: 24px;
+      font-size: 15px;
+      color: #807973;
+    }
+
+    /* 步骤2样式 - CardSection 风格 */
+    .text-card {
+      background: #F7F4F0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid #B3B3B3;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .text-card:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .text-label {
+      font-size: 12px;
+      color: #808080;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .text-content {
+      font-size: 17px;
+      color: #33312E;
+      line-height: 1.5;
+    }
+
+    .text-card.english {
+      background: rgba(204, 143, 82, 0.1);
+      border-left-color: #CC8F52;
+    }
+
+    .text-card .edit-icon {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      background: #F7F4F0;
+      border: none;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .text-card .edit-icon svg {
+      width: 20px;
+      height: 20px;
+      color: #CC8F52;
+    }
+
+    .text-card .edit-icon:hover {
+      background: #CC8F52;
+    }
+
+    .text-card .edit-icon:hover svg {
+      color: #FFFFFF;
+    }
+
+    .text-card .text-content {
+      outline: none;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 8px;
+      margin: -8px;
+      transition: all 0.2s ease;
+    }
+
+    .text-card .text-content:focus,
+    .text-card.editing .text-content {
+      border-color: #CC8F52;
+      background: #FFFFFF;
+    }
+
+    .text-card.editing .edit-icon {
+      display: none;
+    }
+
+    .text-card.english .text-content {
+      font-size: 17px;
+      font-weight: 500;
+      color: #CC8F52;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* CardActionButton 风格 */
+    .card-action-btn {
+      padding: 6px 12px;
+      background: transparent;
+      color: #CC8F52;
+      border: 1px solid #CC8F52;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 32px;
+    }
+
+    .card-action-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .card-action-btn:hover {
+      background: #CC8F52;
+      color: #FFFFFF;
+    }
+
+    .card-action-btn.added {
+      background: rgba(204, 143, 82, 0.15);
+      color: #CC8F52;
+      border-color: #CC8F52;
+    }
+
+    .card-action-btn.added:hover {
+      background: rgba(204, 143, 82, 0.25);
+      color: #CC8F52;
+    }
+
+    .record-control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 24px;
+    }
+
+    .record-status {
+      font-size: 15px;
+      color: #807973;
+      margin-bottom: 16px;
+      min-height: 20px;
+    }
+
+    .record-status.recording {
+      color: #4DCF4A;
+      font-weight: 600;
+    }
+
+    /* MainActionButton 风格 */
+    .main-action-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: #CC8F52;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(204, 143, 82, 0.3);
+    }
+
+    .main-action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(204, 143, 82, 0.4);
+    }
+
+    .main-action-btn:active {
+      transform: translateY(0);
+    }
+
+    .main-action-btn.recording {
+      background: #4DCF4A;
+      animation: pulse-btn 1.5s infinite;
+    }
+
+    .main-action-btn.success {
+      background: #4DCF4A;
+    }
+
+    @keyframes pulse-btn {
+
+      0%,
+      100% {
+        box-shadow: 0 4px 15px rgba(77, 207, 74, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 4px 15px rgba(77, 207, 74, 0.3), 0 0 0 10px rgba(77, 207, 74, 0);
+      }
+    }
+
+    /* SecondaryButton 风格 */
+    .secondary-btn {
+      width: 100%;
+      padding: 8px 16px;
+      background: #F7F4F0;
+      color: #CC8F52;
+      border: none;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.2s ease;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .secondary-btn:hover {
+      background: #CC8F52;
+      color: #FFFFFF;
+    }
+
+    /* Toast 风格 */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #33312E;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 200;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="page-header">
+      <h1>FreeSpeak</h1>
+      <p>功能演示 Demo 及说明</p>
+    </div>
+
+    <div class="page-content">
+      <section class="doc-section">
+        <h2>核心流程</h2>
+
+        <h3>步骤 1：中文语音录制</h3>
+        <ul>
+          <li><strong>触发方式：</strong>用户点击录音按钮开始录制，再次点击停止</li>
+          <li><strong>实时反馈：</strong>录音过程中，标题区域实时显示语音识别结果</li>
+          <li><strong>示例数据：</strong>"这里是你正在说的内容，此为演示数据。"</li>
+        </ul>
+
+        <h3>步骤 2：翻译及跟读练习</h3>
+        <ul>
+          <li><strong>展示内容：</strong>同时显示中文原文和英文翻译结果</li>
+          <li><strong>编辑功能：</strong>点击中文区域可直接修改原文，AI翻译会同步更新</li>
+          <li><strong>辅助功能：</strong>
+            <ul>
+              <li>朗读按钮：播放英文标准发音</li>
+              <li>笔记按钮：保存当前练习内容到学习记录</li>
+            </ul>
+          </li>
+          <li><strong>跟读流程：</strong>
+            <ul>
+              <li>点击"开始跟读"按钮开始录制</li>
+              <li>再次点击停止录制</li>
+              <li>录制完成后可试听录音或重新录制</li>
+              <li>点击"发送"完成练习</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="page-footer">
+      <div class="footer-left">
+        <button class="open-sheet-btn" id="openSheetBtn">
+          FreeSpeak
+        </button>
+      </div>
+      <div class="footer-center">
+        <div class="footer-hold">
+          <div class="footer-hold-text">hold to speak</div>
+        </div>
+      </div>
+      <div class="footer-right">
+        <button class="footer-add-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="sheet" id="sheet">
+    <div class="sheet-header">
+      <button class="close-btn" id="closeBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+        </svg>
+      </button>
+    </div>
+    <div class="sheet-content">
+      <!-- 步骤1: 说中文 -->
+      <div class="step step-1 active" id="step1">
+        <div class="step-1-content">
+          <div class="step-title">想说什么就说什么，我们帮你变成英语</div>
+        </div>
+        <div class="step-1-bottom">
+          <button class="record-btn" id="chineseRecordBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z" />
+            </svg>
+          </button>
+          <div class="record-hint" id="chineseRecordHint">点击开始录音</div>
+        </div>
+      </div>
+
+      <!-- 步骤2: 跟读英文 -->
+      <div class="step step-2" id="step2">
+        <div class="text-card" id="chineseTextCard">
+          <div class="edit-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+          </div>
+          <div class="text-label">你说的中文</div>
+          <div class="text-content" id="chineseText" contenteditable="true">今天天气真好，我想去公园散步</div>
+        </div>
+        <div class="text-card english" id="englishTextCard">
+          <div class="text-label">AI地道表达</div>
+          <div class="text-content" id="englishText">The weather is nice today. I'd like to take a walk in the park.
+          </div>
+          <div class="card-actions">
+            <button class="card-action-btn" id="readBtn">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+              </svg>
+              朗读
+            </button>
+            <button class="card-action-btn" id="noteBtn">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+              </svg>
+              添加到笔记
+            </button>
+          </div>
+        </div>
+        <div class="record-control">
+          <div class="record-status" id="recordStatus">点击下方按钮开始跟读</div>
+          <button class="main-action-btn" id="englishRecordBtn">开始跟读</button>
+          <div class="post-record-buttons" style="display: none; gap: 12px; margin-top: 12px;">
+            <button class="secondary-btn" id="retryBtn" style="flex: 1; margin-top: 0;">重新录制</button>
+            <button class="secondary-btn" id="playRecordingBtn" style="flex: 1; margin-top: 0;">试听录音</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // DOM 元素
+    const overlay = document.getElementById('overlay');
+    const sheet = document.getElementById('sheet');
+    const closeBtn = document.getElementById('closeBtn');
+    const openSheetBtn = document.getElementById('openSheetBtn');
+    const toast = document.getElementById('toast');
+
+    // 步骤元素
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+
+    // 步骤1元素
+    const chineseRecordBtn = document.getElementById('chineseRecordBtn');
+    const chineseRecordHint = document.getElementById('chineseRecordHint');
+
+    // 步骤2元素
+    const englishRecordBtn = document.getElementById('englishRecordBtn');
+    const recordStatus = document.getElementById('recordStatus');
+    const retryBtn = document.getElementById('retryBtn');
+    const playRecordingBtn = document.getElementById('playRecordingBtn');
+    const postRecordButtons = document.querySelector('.post-record-buttons');
+    const readBtn = document.getElementById('readBtn');
+    const noteBtn = document.getElementById('noteBtn');
+    const chineseText = document.getElementById('chineseText');
+    const englishText = document.getElementById('englishText');
+    const chineseTextCard = document.getElementById('chineseTextCard');
+
+    // 状态变量
+    let isChineseRecording = false;
+    let isEnglishRecording = false;
+    let recordingTimer = null;
+
+    // 显示提示消息
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // 打开弹窗
+    function openSheet() {
+      overlay.classList.add('active');
+      sheet.classList.add('active');
+    }
+
+    // 关闭弹窗
+    function closeSheet() {
+      overlay.classList.remove('active');
+      sheet.classList.remove('active');
+      setTimeout(resetFlow, 300);
+    }
+
+    // 重置流程
+    function resetFlow() {
+      step1.classList.add('active');
+      step2.classList.remove('active');
+
+      isChineseRecording = false;
+      isEnglishRecording = false;
+
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+
+      if (typingTimer) {
+        clearInterval(typingTimer);
+        typingTimer = null;
+      }
+
+      chineseRecordBtn.classList.remove('recording');
+      stepTitle.textContent = '想说什么就说什么，我们帮你变成英语';
+      chineseRecordHint.textContent = '点击开始录音';
+
+      englishRecordBtn.textContent = '开始跟读';
+      englishRecordBtn.classList.remove('recording', 'success');
+      recordStatus.textContent = '点击下方按钮开始跟读';
+      recordStatus.classList.remove('recording');
+      postRecordButtons.style.display = 'none';
+    }
+
+    // 事件监听器
+    openSheetBtn.addEventListener('click', openSheet);
+    overlay.addEventListener('click', closeSheet);
+    closeBtn.addEventListener('click', closeSheet);
+
+    // 步骤1: 中文录音（点击开始/停止）
+    // 步骤1: 中文录音（点击开始/停止）
+    let typingTimer = null;
+    const demoText = "这里是你正在说的内容，此为演示数据。";
+    const stepTitle = document.querySelector('.step-title');
+
+    chineseRecordBtn.addEventListener('click', () => {
+      if (!isChineseRecording) {
+        // 开始录音
+        isChineseRecording = true;
+        chineseRecordBtn.classList.add('recording');
+        stepTitle.textContent = '';
+
+        // 打字机效果
+        let charIndex = 0;
+        const typingSpeed = 5000 / demoText.length; // 5秒内打完
+
+        typingTimer = setInterval(() => {
+          if (charIndex < demoText.length) {
+            stepTitle.textContent += demoText[charIndex];
+            charIndex++;
+          } else {
+            clearInterval(typingTimer);
+          }
+        }, typingSpeed);
+
+        chineseRecordHint.textContent = '录音中...';
+
+      } else {
+        // 停止录音
+        isChineseRecording = false;
+        chineseRecordBtn.classList.remove('recording');
+
+        // 清除打字机定时器
+        if (typingTimer) {
+          clearInterval(typingTimer);
+          typingTimer = null;
+        }
+
+        // 显示完整文本
+        stepTitle.textContent = demoText;
+
+        // 短暂延迟后显示处理中
+        setTimeout(() => {
+          chineseRecordHint.textContent = '处理中...';
+        }, 500);
+
+        // 跳转到步骤2
+        setTimeout(() => {
+          step1.classList.remove('active');
+          step2.classList.add('active');
+        }, 1000);
+      }
+    });
+
+    // 步骤2: 英文跟读录音
+    englishRecordBtn.addEventListener('click', () => {
+      if (englishRecordBtn.classList.contains('success') && englishRecordBtn.textContent === '发送') {
+        // 发送录音
+        showToast('✓ 发送成功');
+        setTimeout(() => {
+          closeSheet();
+        }, 1500);
+        return;
+      }
+
+      if (!isEnglishRecording) {
+        // 开始录音
+        isEnglishRecording = true;
+        englishRecordBtn.textContent = '录音中...';
+        englishRecordBtn.classList.add('recording');
+        recordStatus.textContent = '正在录音';
+        recordStatus.classList.add('recording');
+
+        // 动态显示录音中的点
+        let dotCount = 0;
+        recordingTimer = setInterval(() => {
+          dotCount = (dotCount + 1) % 4;
+          englishRecordBtn.textContent = '录音中' + '.'.repeat(dotCount);
+        }, 400);
+      } else {
+        // 停止录音
+        isEnglishRecording = false;
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+
+        englishRecordBtn.classList.remove('recording');
+        englishRecordBtn.classList.add('success');
+        englishRecordBtn.textContent = '发送';
+        recordStatus.textContent = '录音完成，点击发送';
+        recordStatus.classList.remove('recording');
+        postRecordButtons.style.display = 'flex';
+      }
+    });
+
+    // 重新录音
+    retryBtn.addEventListener('click', () => {
+      englishRecordBtn.textContent = '开始跟读';
+      englishRecordBtn.classList.remove('recording', 'success');
+      recordStatus.textContent = '点击下方按钮开始跟读';
+      recordStatus.classList.remove('recording');
+      postRecordButtons.style.display = 'none';
+      isEnglishRecording = false;
+
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+    });
+
+    // 试听录音按钮
+    playRecordingBtn.addEventListener('click', () => {
+      showToast('🔊 正在播放录音');
+    });
+
+    // 朗读按钮
+    readBtn.addEventListener('click', () => {
+      showToast('🔊 正在朗读英文');
+    });
+
+    // 笔记按钮
+    noteBtn.addEventListener('click', () => {
+      if (!noteBtn.classList.contains('added')) {
+        noteBtn.classList.add('added');
+        noteBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                    已添加到笔记
+                `;
+        showToast('📝 已添加到笔记');
+      }
+    });
+
+    // 文本编辑功能
+    const mockTranslations = {
+      '今天天气真好，我想去公园散步': 'The weather is nice today. I\'d like to take a walk in the park.',
+      'hello': '你好',
+      '你好': 'hello',
+      '谢谢': 'thank you',
+      'thank you': '谢谢',
+      '再见': 'goodbye',
+      'goodbye': '再见'
+    };
+
+    function getMockTranslation(text) {
+      const trimmed = text.trim();
+      return mockTranslations[trimmed] || `[翻译] ${trimmed}`;
+    }
+
+    chineseTextCard.addEventListener('click', (e) => {
+      if (e.target.closest('.edit-icon')) return;
+      chineseTextCard.classList.add('editing');
+      chineseText.focus();
+    });
+
+    chineseText.addEventListener('blur', () => {
+      chineseTextCard.classList.remove('editing');
+      const newChinese = chineseText.textContent.trim();
+      if (newChinese) {
+        const newTranslation = getMockTranslation(newChinese);
+        englishText.textContent = newTranslation;
+        showToast('✓ 翻译已更新');
+      }
+    });
+
+    chineseText.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        chineseText.blur();
+      }
+    });
+  </script>
+</body>
+
+</html>
